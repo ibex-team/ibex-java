@@ -179,11 +179,11 @@ public class IbexTest {
 		
 		result=ibex.next_solution(domains);
 		Assert.assertEquals(Ibex.SOLUTION,result);
-		cmpDomains(new double[]{cospi6,cospi6,sinpi6,sinpi6}, domains);
+		cmpDomains(new double[]{cospi6,cospi6,-sinpi6,-sinpi6}, domains);
 		
 		result=ibex.next_solution(domains);
 		Assert.assertEquals(Ibex.SOLUTION,result);
-		cmpDomains(new double[]{cospi6,cospi6,-sinpi6,-sinpi6}, domains);
+		cmpDomains(new double[]{cospi6,cospi6,sinpi6,sinpi6}, domains);
 		
 		result=ibex.next_solution(domains);
 		Assert.assertEquals(Ibex.SEARCH_OVER,result);
