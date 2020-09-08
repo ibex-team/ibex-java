@@ -80,9 +80,10 @@ def build (bld):
 	)
 
 	java_ibex_header = "src/%s_Ibex.h" % bld.env.JAVA_SIGNATURE
-	
+
 	# Generate C++ header with javah
-	if bld.env.java_main_version<10:
+	pathdir = os.path.dirname (bld.env.JAVAC[0])
+	if os.path.exists(pathdir+"/bin/javah"): # valid for JDK<10
 		bld (
 			features = "myjavah",
 			source = java_ibex_class,
