@@ -38,13 +38,20 @@ namespace {
 
 // Restore the environement of Ibex
 // (rounding mode for Gaol)
-// see issue #307
+// see issue #307 (ibex-lib)
 void ibex_restore() {
 // note: cannot replace with if (strcmp(_IBEX_INTERVAL_LIB_,"GAOL")==0)
 // because we need this at preprocessing
 #ifdef __gaol__
 	gaol::round_upward();
-	// Q°: do we need to set round-to-nearest in return?
+#endif
+}
+
+// Restore the default rounding mode for Java
+// see issue #3 (ibex-java)
+void java_restore() {
+#ifdef __gaol__
+	gaol::round_nearest();
 #endif
 }
 
@@ -227,6 +234,8 @@ jint inflate(NumConstraint& ctr, const IntervalVector& xin, IntervalVector& x, j
 			result=INFLATE;
 		}
 	}
+
+	java_restore(); 
 	return result;
 }
 
@@ -281,11 +290,14 @@ JNIEXPORT jboolean JNICALL Java_@JAVA_SIGNATURE@_Ibex_build(JNIEnv* env, jobject
 	if (inst.sys==NULL) {
 		try {
 			inst.build();
+			java_restore();
 			return true;
 		} catch(SyntaxError&) {
+			java_restore();
 			return false;
 		}
 	} else {
+		java_restore();
 		return true; 
 	}
 }
@@ -307,6 +319,7 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DID(JNIEnv* env, 
 	IntervalVector box=inst.read_box(env,d,env->GetArrayLength(_d));
 	if (box.is_empty()) {
 		env->ReleaseDoubleArrayElements(_d, d, 0);
+		java_restore();
 		return BAD_DOMAIN;
 	}
 
@@ -370,7 +383,8 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DID(JNIEnv* env, 
 	}
 
 	env->ReleaseDoubleArrayElements(_d, d, 0);
-
+	
+	java_restore();
 	return result;
 }
 
@@ -394,6 +408,7 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_inflate(JNIEnv* env, jobject o
 	IntervalVector x=inst.read_box(env,d,env->GetArrayLength(_d));
 	if (x.is_empty()) {
 		env->ReleaseDoubleArrayElements(_d, d, 0);
+		java_restore();
 		return BAD_DOMAIN;
 	}
 
@@ -401,6 +416,7 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_inflate(JNIEnv* env, jobject o
 	if (env->GetArrayLength(_din)!=inst.nb_var) {
 		env->ReleaseDoubleArrayElements(_d, d, 0);
 		env->ReleaseDoubleArrayElements(_din, din, 0);
+		java_restore();
 		return BAD_DOMAIN;
 	}
 
@@ -467,6 +483,7 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_inflate(JNIEnv* env, jobject o
 	env->ReleaseDoubleArrayElements(_d, d, 0);
 	env->ReleaseDoubleArrayElements(_din, din, 0);
 
+	java_restore();
 	return result;
 }
 
@@ -485,11 +502,13 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_start_1solve(JNIEnv* env, jobj
 	IntervalVector box=inst.read_box(env,d,env->GetArrayLength(_d));
 	if (box.is_empty()) {
 		env->ReleaseDoubleArrayElements(_d, d, 0);
+		java_restore();
 		return BAD_DOMAIN;
 	}
 
 	for (int i=0; i<inst.nb_var; i++) {
 		if (inst.params[i] && !box[i].is_degenerated()) {
+			java_restore();
 			return DISCRETE_NOT_INSTANCIATED;
 		}
 	}
@@ -497,6 +516,8 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_start_1solve(JNIEnv* env, jobj
 	inst.solver->start(box);
 
 	env->ReleaseDoubleArrayElements(_d, d, 0);
+	
+	java_restore();
 	return STARTED;
 }
 
@@ -516,6 +537,7 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_next_1solution(JNIEnv* env, jo
 	IntervalVector box=inst.read_box(env,d,env->GetArrayLength(_d));
 	if (box.is_empty()) {
 		env->ReleaseDoubleArrayElements(_d, d, 0);
+		java_restore();
 		return BAD_DOMAIN;
 	}
 
@@ -533,6 +555,8 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_next_1solution(JNIEnv* env, jo
 	}
 
 	env->ReleaseDoubleArrayElements(_d, d, 0);
+	
+	java_restore();
 	return result;
 }
 
