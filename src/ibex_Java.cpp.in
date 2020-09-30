@@ -392,6 +392,14 @@ JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DD(JNIEnv* env, j
 	return Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DID(env,obj,n,_d,1,rel_eps);
 }
 
+JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DI(JNIEnv* env, jobject obj, jint n, jdoubleArray _d, jint reif) {
+	return Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DID(env,obj,n,_d,reif,EPS_CONTRACT);
+}
+
+JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_contract__I_3D(JNIEnv* env, jobject obj, jint n, jdoubleArray _d) {
+	return Java_@JAVA_SIGNATURE@_Ibex_contract__I_3DID(env,obj,n,_d,1,EPS_CONTRACT);
+}
+
 JNIEXPORT jint JNICALL Java_@JAVA_SIGNATURE@_Ibex_inflate(JNIEnv* env, jobject obj, jint n, jdoubleArray _din, jdoubleArray _d, jboolean in) {
 
 	Instance& inst = *get_instance(env,obj);
