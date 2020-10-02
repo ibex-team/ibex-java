@@ -66,10 +66,26 @@ public class Ibex {
 	 *                  
 	 *                prec[i]==-1 => the ith variable is integral. 
 	 *                prec[i]>=0  => the ith variable is real and the precision is prec[i].
-	 *               
+	 *
+	 * @preserve_rounding - Under Linux/MacOS, Ibex (if linked with Gaol) does not use the standard 
+	 *                      rounding mode of the FPU (round-to-nearest) but the upward rounding mode, in order 
+	 *                      to get better performances. If preserve_rounding is true, Ibex will activate the 
+	 *                      upward rounding mode at each function call (contract, etc.) and restore the default 
+	 *                      rounding mode in return, which is transparent from Java but which also mean a loss 
+	 *                      of efficiency. If set to false, the rounding mode is only activated once by the 
+	 *                      construtor. In this case, the rounding mode is also changed on Java side.
+	 */
+	public Ibex(double[] prec, boolean preserve_rounding) {
+		init(prec, preserve_rounding);
+	}
+	
+	/**
+	 * Same as previous constructor with preserve_rounding=false.
+	 * 
+	 * For backward compatibility.
 	 */
 	public Ibex(double[] prec) {
-		init(prec);
+		init(prec, false);
 	}
 
 	/**
@@ -272,7 +288,7 @@ public class Ibex {
 	 *
 	 * This method is automatically called by the constructor.
 	 */
-	private native void init(double[] prec);
+	private native void init(double[] prec, boolean preserve_rounding);
 
 	// Internal: do not modify!
 	// This is a pointer to native c++ data

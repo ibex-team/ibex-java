@@ -260,6 +260,26 @@ public class IbexTest {
 
 	}
 
+	@Test
+	public void test_correct_rounding1() {
+	    Ibex ibex = new Ibex(new double[]{1.e-1, 1.e-1, 1.e-4}, false);
+        ibex.add_ctr("{0}+{1}={2}");
+        ibex.build();
+        double domains[] = {0.1, 0.1, 0.2, 0.2, -5.0, 5.0};
+        int result = ibex.contract(0, domains);
+        Assert.assertEquals(Ibex.CONTRACT, result);
+	}
+
+	@Test
+	public void test_correct_rounding2() {
+	    Ibex ibex = new Ibex(new double[]{1.e-1, 1.e-1, 1.e-4}, true);
+        ibex.add_ctr("{0}+{1}={2}");
+        ibex.build();
+        double domains[] = {0.1, 0.1, 0.2, 0.2, -5.0, 5.0};
+        int result = ibex.contract(0, domains);
+        Assert.assertEquals(Ibex.CONTRACT, result);
+	}
+
 	public static void main(String args[]) {
         org.junit.runner.JUnitCore.main("IbexTest");
       }
