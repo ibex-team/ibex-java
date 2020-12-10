@@ -15,6 +15,8 @@ def options (opt):
 	grp.add_option ("--java-package-name", action="store", type="string",
 			dest="JAVA_PACKAGE", default="ibex",
 			help="name of the java package to be build (default is ibex)")
+			
+	opt.plugins["jni"] = "WITH_JNI"
 
 ######################
 ##### configure ######
